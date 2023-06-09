@@ -804,20 +804,7 @@ class SwinIR(nn.Module):
             x = self.forward_features(x) + x
             x = torch.nn.functional.interpolate(x, scale_factor=2, mode='nearest')
             x = self.conv_last(x)
-        elif self.upsampler == 'pixelshuffledirect':
-            # for lightweight SR
-            x = self.conv_first(x)
-            x = self.conv_after_body(self.forward_features(x)) + x
-            x = self.upsample(x)
-        elif self.upsampler == 'nearest+conv':
-            # for real-world SR
-            x = self.conv_first(x)
-            x = self.conv_after_body(self.forward_features(x)) + x
-            x = self.conv_before_upsample(x)
-            x = self.lrelu(self.conv_up1(torch.nn.functional.interpolate(x, scale_factor=2, mode='nearest')))
-            if self.upscale == 4:
-                x = self.lrelu(self.conv_up2(torch.nn.functional.interpolate(x, scale_factor=2, mode='nearest')))
-            x = self.conv_last(self.lrelu(self.conv_hr(x)))
+
         else:
             # for image denoising and JPEG compression artifact reduction
             x = self.conv_first(x)
@@ -844,10 +831,10 @@ class SwinIR(nn.Module):
         return flops
 
 
-def swinIR():
+def swinIR():  # If train Pure-Swin, change upsample with 'Pixelshuffle'
     model = SwinIR(upscale=1, in_chans=1, img_size=128, window_size=8,
                    img_range=1., depths=[6, 6, 6, 6, 6, 6], embed_dim=128, num_heads=[4, 4, 4, 4, 4, 4],
-                   mlp_ratio=2, upsampler='', resi_connection='1conv')
+                   mlp_ratio=2, upsampler='', resi_connection='1conv') 
     return model
     # print(model)
 
