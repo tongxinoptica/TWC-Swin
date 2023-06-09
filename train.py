@@ -50,9 +50,9 @@ def main(args):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")  # 定义训练的设备
     swin_model.to(device)
     print(device)
-    print("模型加载完成，开始训练")
+    print("Model loded, start traning")
 
-    # 损失函数
+    # Loss function
     loss_function = nn.MSELoss()
     # loss_function3 = NPCC_loss()
     # loss_function1 = mse_loss()
@@ -69,7 +69,7 @@ def main(args):
     optimizer = torch.optim.AdamW(swin_model.parameters(), betas=(0.9, 0.999), lr=learning_rate)
     # stepLR = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.5)
 
-    # 加载权重
+    # Load weight parameter
     # try:
     #     swin_model.load_state_dict(torch.load('parameter/lr=0.0005_1.7f_nor'))
     #     print('--- weight loaded ---')
@@ -87,8 +87,8 @@ def main(args):
         if (i + 1) % 8 == 0 and learning_rate >= 3e-8:
             learning_rate /= 2
 
-        # 后期加入学习率调整
-        # 训练
+       
+        # Training process
         swin_model.train()
         # psnr_list = []
         # ssim_list = []
@@ -100,7 +100,7 @@ def main(args):
             imgs = imgs.to(device)
             label = label.to(device)
 
-            output = swin_model(imgs)  # 计算输出
+            output = swin_model(imgs)  
             # output = torch.where(output < 1, output, b)
             loss = loss_function(output, label)
 
@@ -110,7 +110,7 @@ def main(args):
 
             # loss /= accumulation_steps
             # loss.backward()
-            # if ((batch_id + 1) % accumulation_steps) == 0:  # 梯度叠加
+            # if ((batch_id + 1) % accumulation_steps) == 0: 
             #     optimizer.step()
             #     optimizer.zero_grad()
 
@@ -141,7 +141,7 @@ def main(args):
         # ws.cell(row=s, column=3).value = train_npcc.item()
         # ws.cell(row=s, column=4).value = train_ssim.item()
 
-        # 验证BSD数据集
+        # Test BSD dataset
         BSD_psnr_list_ = []
         BSD_ssim_list_ = []
         BSD_mse_list_ = []
@@ -179,7 +179,7 @@ def main(args):
         # ws.cell(row=s, column=7).value = BSD_val_npcc.item()
         # ws.cell(row=s, column=8).value = BSD_val_ssim.item()
 
-        # 验证celeb数据集
+        # Test celeb dataset
         celeb_psnr_list_ = []
         celeb_ssim_list_ = []
         celeb_mse_list_ = []
@@ -214,7 +214,7 @@ def main(args):
         # ws.cell(row=s, column=11).value = celeb_val_npcc.item()
         # ws.cell(row=s, column=12).value = celeb_val_ssim.item()
 
-        # 验证DIV数据集
+        # Test DIV dataset
         DIV_psnr_list_ = []
         DIV_ssim_list_ = []
         DIV_mse_list_ = []
@@ -249,7 +249,7 @@ def main(args):
         # ws.cell(row=s, column=15).value = DIV_val_npcc.item()
         # ws.cell(row=s, column=16).value = DIV_val_ssim.item()
 
-        # 验证flickr数据集
+        # Test flickr dataset
         flickr_psnr_list_ = []
         flickr_ssim_list_ = []
         flickr_mse_list_ = []
@@ -284,7 +284,7 @@ def main(args):
         # ws.cell(row=s, column=19).value = flickr_val_npcc.item()
         # ws.cell(row=s, column=20).value = flickr_val_ssim.item()
 
-        # 验证imagenet数据集
+        # Test WED dataset
         WED_psnr_list_ = []
         WED_ssim_list_ = []
         WED_mse_list_ = []
@@ -325,13 +325,13 @@ def main(args):
             #torch.save(swin_model.state_dict(), 'parameter/swin_noconv_{}'.format(args.coherence))
             old_mse = BSD_val_mse
             # old_ssim = val_ssim
-            print("权重更新完成")
+            print("Parameter update")
         # if i == 100:
         #     torch.save(RDR_model.state_dict(), 'weight_parameter_gr36{}'.format(i))
 
 
 if __name__ == '__main__':
-    co = ['1.4f']
+    co = ['f']
     for i in co:
         print(i)
         parser = argparse.ArgumentParser()
